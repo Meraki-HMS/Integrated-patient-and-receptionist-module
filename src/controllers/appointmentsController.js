@@ -461,3 +461,32 @@ exports.rescheduleAppointment = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+// ==============================
+// Get doctor availability (as input by receptionist, not divided)
+// ==============================
+exports.getDoctorAvailability = async (req, res) => {
+  try {
+    const { doctorId, date } = req.params;
+
+    if (!doctorId || !date) {
+      return res.status(400).json({ message: "doctorId and date are required" });
+    }
+
+    // Find the availability record for the given doctor and date
+    const availability = await DoctorAvailability.findOne({ doctorId, date });
+
+    if (!availability) {
+      return res.status(404).json({ message: "No availability found for this doctor on this date" });
+    }
+
+    // Return exactly what the receptionist saved (not split into 30-min slots)
+    res.json({
+      doctorId,
+      date,
+      slots: availability.slots
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -35,5 +35,9 @@ router.put("/:appointmentId/reschedule", isLoggedIn, appointmentsController.resc
 // Protect with isLoggedIn (receptionist)
 router.post("/availability/remove", appointmentsController.removeDoctorAvailabilitySlots);
 
+// Get doctor availability (raw, as receptionist input)
+router.get("/availability/raw/:doctorId/:date", isLoggedIn, appointmentsController.getDoctorAvailability);
+
+
 
 module.exports = router;
